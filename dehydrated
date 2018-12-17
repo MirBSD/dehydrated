@@ -729,7 +729,7 @@ sign_csr() {
     challenges="$(echo "${response}" | sed 's/.*"challenges": \[({.*})\].*/\1/')"
     challenge="$(<<<"${challenges}" sed -e 's/^[^\[]\{1,\}\[\(..*\)\]$/\1/' -e '}, {/}\'$'\n''\2/g' -e 's/}]/}\'$'\n''\2/g' | grep \""${CHALLENGETYPE}"\" || true)"
     if [ -z "${challenge}" ]; then
-      allowed_validations="$(grep -Eo '"type": "[^"]+"' <<< "${challenges}" | grep -Eo ' "[^"]+"' | _sed -e 's/"//g' -e 's/^ //g')"
+      allowed_validations="$(grep -Eo '"type": "[^"]+"' <<< "${challenges}" | grep -Eo ' "[^"]+"' | sed -e 's/"//g' -e 's/^ //g')"
 #'
       _exiterr "Validating this certificate is not possible using ${CHALLENGETYPE}. Possible validation methods are: ${allowed_validations}"
     fi
