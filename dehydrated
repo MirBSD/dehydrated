@@ -638,7 +638,7 @@ extract_altnames() {
       _exiterr "Certificate signing request contains non-DNS Subject Alternative Names"
     fi
     # strip away the DNS: prefix
-    altnames="$( <<<"${altnames}" _sed -e 's/^(DNS:|othername:<unsupported>)//' )"
+    altnames="$( <<<"${altnames}" sed -e 's/^DNS://' -e -s/^othername:<unsupported>//')"
     printf "%s" "${altnames}" | tr '\n' ' '
   else
     # No SANs, extract CN
