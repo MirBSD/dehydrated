@@ -642,7 +642,7 @@ extract_altnames() {
     printf "%s" "${altnames}" | tr '\n' ' '
   else
     # No SANs, extract CN
-    altnames="$( <<<"${reqtext}" grep '^[	- ]*Subject:' | _sed -e 's/.* CN ?= ?([^ /,]*).*/\1/' )"
+    altnames="$( <<<"${reqtext}" grep '^[	- ]*Subject:' | sed -e 's/.* CN ?= ?\([^ /,]*\).*/\1/' )"
     printf "%s" "${altnames}"
   fi
 }
