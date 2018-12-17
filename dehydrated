@@ -448,7 +448,7 @@ urlbase64() {
 # Convert hex string to binary data
 hex2bin() {
   # Remove spaces, add leading zero, escape as hex string and parse with printf
-  printf -- "$(cat | _sed -e 's/[[:space:]]//g' -e 's/^(.(.{2})*)$/0\1/' -e 's/(.{2})/\\x\1/g')"
+  printf -- "$(_sed -e 's/[[:space:]]//g' -e 's/^(.(.{2})*)$/0\1/' -e 's/(.{2})/\\x\1/g')"
 }
 
 # Get string value from json dictionary
