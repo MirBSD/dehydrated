@@ -1055,7 +1055,11 @@ command_version() {
     echo " mktemp: $(mktemp --version 2>&1 | head -n1)"
   fi
   echo " grep: $(grep --version 2>&1 | head -n1)"
-  echo " diff: $(diff --version 2>&1 | head -n1)"
+  if [[ $OSTYPE = MirBSD ]]; then
+    echo " diff: BSD base system version"
+  else
+    echo " diff: $(diff --version 2>&1 | head -n1)"
+  fi
   echo " openssl: $("${OPENSSL}" version 2>&1)"
 
   exit 0
