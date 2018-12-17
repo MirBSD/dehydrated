@@ -727,7 +727,7 @@ sign_csr() {
 
     # Find challenge in authorization
     challenges="$(echo "${response}" | sed 's/.*"challenges": \[({.*})\].*/\1/')"
-    challenge="$(<<<"${challenges}" _sed -e 's/^[^\[]+\[(.+)\]$/\1/' -e 's/\}(, (\{)|(\]))/}\'$'\n''\2/g' | grep \""${CHALLENGETYPE}"\" || true)"
+    challenge="$(<<<"${challenges}" sed -e 's/^[^\[]\{1,\}\[\(..*\)\]$/\1/' -e '}, {/}\'$'\n''\2/g' -e 's/}]/}\'$'\n''\2/g' | grep \""${CHALLENGETYPE}"\" || true)"
     if [ -z "${challenge}" ]; then
       allowed_validations="$(grep -Eo '"type": "[^"]+"' <<< "${challenges}" | grep -Eo ' "[^"]+"' | _sed -e 's/"//g' -e 's/^ //g')"
 #'
