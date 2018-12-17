@@ -632,7 +632,7 @@ extract_altnames() {
     altnames="$( <<<"${reqtext}" awk '/X509v3 Subject Alternative Name:/{print;getline;print;}' | tail -n1 )"
     # split to one per line:
     # shellcheck disable=SC1003
-    altnames="$( <<<"${altnames}" _sed -e 's/^[	- ]*//; s/, /\'$'\n''/g' )"
+    altnames="$( <<<"${altnames}" sed -e 's/^[	- ]*//; s/, /\'$'\n''/g' )"
     # we can only get DNS: ones signed
     if grep -qEv '^(DNS|othername):' <<<"${altnames}"; then
       _exiterr "Certificate signing request contains non-DNS Subject Alternative Names"
