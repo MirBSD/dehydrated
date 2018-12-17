@@ -448,7 +448,7 @@ urlbase64() {
 # Convert hex string to binary data
 hex2bin() {
   # Remove spaces, add leading zero, escape as hex string and parse with printf
-  printf -- "$(_sed -e 's/[[:space:]]//g' -e 's/^(.(.{2})*)$/0\1/' -e 's/(.{2})/\\x\1/g')"
+  printf -- "$(_sed -e 's/[	- ]//g' -e 's/^(.(.{2})*)$/0\1/' -e 's/(.{2})/\\x\1/g')"
 }
 
 # Get string value from json dictionary
@@ -627,12 +627,12 @@ extract_altnames() {
   fi
 
   reqtext="$( <<<"${csr}" "${OPENSSL}" req -noout -text )"
-  if <<<"${reqtext}" grep -q '^[[:space:]]*X509v3 Subject Alternative Name:[[:space:]]*$'; then
+  if <<<"${reqtext}" grep -q '^[	- ]*X509v3 Subject Alternative Name:[	- ]*$'; then
     # SANs used, extract these
     altnames="$( <<<"${reqtext}" awk '/X509v3 Subject Alternative Name:/{print;getline;print;}' | tail -n1 )"
     # split to one per line:
     # shellcheck disable=SC1003
-    altnames="$( <<<"${altnames}" _sed -e 's/^[[:space:]]*//; s/, /\'$'\n''/g' )"
+    altnames="$( <<<"${altnames}" _sed -e 's/^[	- ]*//; s/, /\'$'\n''/g' )"
     # we can only get DNS: ones signed
     if grep -qEv '^(DNS|othername):' <<<"${altnames}"; then
       _exiterr "Certificate signing request contains non-DNS Subject Alternative Names"
@@ -642,7 +642,7 @@ extract_altnames() {
     printf "%s" "${altnames}" | tr '\n' ' '
   else
     # No SANs, extract CN
-    altnames="$( <<<"${reqtext}" grep '^[[:space:]]*Subject:' | _sed -e 's/.* CN ?= ?([^ /,]*).*/\1/' )"
+    altnames="$( <<<"${reqtext}" grep '^[	- ]*Subject:' | _sed -e 's/.* CN ?= ?([^ /,]*).*/\1/' )"
     printf "%s" "${altnames}"
   fi
 }
@@ -1160,7 +1160,7 @@ command_sign_domains() {
   # Generate certificates for all domains found in domains.txt. Check if existing certificate are about to expire
   ORIGIFS="${IFS}"
   IFS=$'\n'
-  for line in $(<"${DOMAINS_TXT}" tr -d '\r' | awk '{print tolower($0)}' | _sed -e 's/^[[:space:]]*//g' -e 's/[[:space:]]*$//g' -e 's/[[:space:]]+/ /g' -e 's/([^ ])>/\1 >/g' -e 's/> />/g' | (grep -vE '^(#|$)' || true)); do
+  for line in $(<"${DOMAINS_TXT}" tr -d '\r' | awk '{print tolower($0)}' | _sed -e 's/^[	- ]*//g' -e 's/[	- ]*$//g' -e 's/[	- ]+/ /g' -e 's/([^ ])>/\1 >/g' -e 's/> />/g' | (grep -vE '^(#|$)' || true)); do
     reset_configvars
     IFS="${ORIGIFS}"
     alias="$(grep -Eo '>[^ ]+' <<< "${line}" || true)"
@@ -1498,14 +1498,14 @@ command_help() {
   printf "Usage: %s [-h] [command [argument]] [parameter [argument]] [parameter [argument]] ...\n\n" "${0}"
   printf "Default command: help\n\n"
   echo "Commands:"
-  grep -e '^[[:space:]]*# Usage:' -e '^[[:space:]]*# Description:' -e '^command_.*()[[:space:]]*{' "${0}" | while read -r usage; read -r description; read -r command; do
+  grep -e '^[	- ]*# Usage:' -e '^[	- ]*# Description:' -e '^command_.*()[	- ]*{' "${0}" | while read -r usage; read -r description; read -r command; do
     if [[ ! "${usage}" = *Usage* ]] || [[ ! "${description}" = *Description* ]] || [[ ! "${command}" = command_* ]]; then
       _exiterr "Error generating help text."
     fi
     printf " %-32s %s\n" "${usage##"# Usage: "}" "${description##"# Description: "}"
   done
   printf -- "\nParameters:\n"
-  grep -E -e '^[[:space:]]*# PARAM_Usage:' -e '^[[:space:]]*# PARAM_Description:' "${0}" | while read -r usage; read -r description; do
+  grep -E -e '^[	- ]*# PARAM_Usage:' -e '^[	- ]*# PARAM_Description:' "${0}" | while read -r usage; read -r description; do
     if [[ ! "${usage}" = *Usage* ]] || [[ ! "${description}" = *Description* ]]; then
       _exiterr "Error generating help text."
     fi
