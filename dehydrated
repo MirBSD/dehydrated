@@ -691,8 +691,7 @@ sign_csr() {
 
     local idx=0
     for uri in ${order_authorizations}; do
-      authorizations[${idx}]="$(echo "${uri}" | _sed -e 's/\"(.*)".*/\1/')"
-#'
+      authorizations[${idx}]="$(echo "${uri}" | sed -e 's/"\(.*\)".*/\1/')"
       idx=$((idx+1))
     done
     echo " + Received ${idx} authorizations URLs from the CA"
@@ -710,7 +709,7 @@ sign_csr() {
   for authorization in ${authorizations[*]}; do
     if [[ "${API}" -eq 2 ]]; then
       # Receive authorization ($authorization is authz uri)
-      response="$(http_request get "$(echo "${authorization}" | _sed -e 's/\"(.*)".*/\1/')" | clean_json)"
+      response="$(http_request get "$(echo "${authorization}" | sed -e 's/"\(.*\)".*/\1/')" | clean_json)"
       identifier="$(echo "${response}" | get_json_dict_value identifier | get_json_string_value value)"
       echo " + Handling authorization for ${identifier}"
     else
@@ -721,13 +720,13 @@ sign_csr() {
     fi
 
     # Check if authorization has already been validated
-    if [ "$(echo "${response}" | _sed 's/"challenges": \[\{.*\}\]//' | get_json_string_value status)" = "valid" ] && [ ! "${PARAM_FORCE:-no}" = "yes" ]; then
+    if [ "$(echo "${response}" | sed 's/"challenges": \[{.*}\]//' | get_json_string_value status)" = "valid" ] && [ ! "${PARAM_FORCE:-no}" = "yes" ]; then
       echo " + Found valid authorization for ${identifier}"
       continue
     fi
 
     # Find challenge in authorization
-    challenges="$(echo "${response}" | _sed 's/.*"challenges": \[(\{.*\})\].*/\1/')"
+    challenges="$(echo "${response}" | sed 's/.*"challenges": \[({.*})\].*/\1/')"
     challenge="$(<<<"${challenges}" _sed -e 's/^[^\[]+\[(.+)\]$/\1/' -e 's/\}(, (\{)|(\]))/}\'$'\n''\2/g' | grep \""${CHALLENGETYPE}"\" || true)"
     if [ -z "${challenge}" ]; then
       allowed_validations="$(grep -Eo '"type": "[^"]+"' <<< "${challenges}" | grep -Eo ' "[^"]+"' | _sed -e 's/"//g' -e 's/^ //g')"
