@@ -1163,7 +1163,7 @@ command_sign_domains() {
     reset_configvars
     IFS="${ORIGIFS}"
     alias="$(grep -Eo '>[^ ]+' <<< "${line}" || true)"
-    line="$(_sed -e 's/>[^ ]+[ ]*//g' <<< "${line}")"
+    line="$(sed -e 's/>[^ ]\{1,\}[ ]*//g' <<< "${line}")"
     aliascount="$(grep -Eo '>' <<< "${alias}" | awk 'END {print NR}' || true )"
     [ ${aliascount} -gt 1 ] && _exiterr "Only one alias per line is allowed in domains.txt!"
 
