@@ -45,7 +45,6 @@ _mktemp() {
 check_dependencies() {
   # just execute some dummy and/or version commands to see if required tools exist and are actually usable
   "${OPENSSL}" version > /dev/null 2>&1 || _exiterr "This script requires an openssl binary."
-  _sed "" < /dev/null > /dev/null 2>&1 || _exiterr "This script requires sed with support for extended (modern) regular expressions."
   command -v grep > /dev/null 2>&1 || _exiterr "This script requires grep."
   command -v mktemp > /dev/null 2>&1 || _exiterr "This script requires mktemp."
   command -v diff > /dev/null 2>&1 || _exiterr "This script requires diff."
@@ -416,15 +415,6 @@ init_system() {
     fi
     ACCOUNT_ID="${ACCOUNT_URL##*/}"
     echo "${ACCOUNT_INFO}" > "${ACCOUNT_KEY_JSON}"
-  fi
-}
-
-# Different sed version for different os types...
-_sed() {
-  if [[ "${OSTYPE}" = "Linux" || "${OSTYPE:0:5}" = "MINGW" ]]; then
-    sed -r "${@}"
-  else
-    sed -E "${@}"
   fi
 }
 
