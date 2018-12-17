@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env mksh
 
 # dehydrated by lukas2511
 # Source: https://dehydrated.io
@@ -8,8 +8,12 @@
 set -e
 set -u
 set -o pipefail
+if test -n "${KSH_VERSION:-}"; then
+	set -f
+else
 [[ -n "${ZSH_VERSION:-}" ]] && set -o SH_WORD_SPLIT && set +o FUNCTION_ARGZERO && set -o NULL_GLOB && set -o noglob
 [[ -z "${ZSH_VERSION:-}" ]] && shopt -s nullglob && set -f
+fi
 
 umask 077 # paranoid umask, we're creating private keys
 
