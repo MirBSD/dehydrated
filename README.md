@@ -40,7 +40,7 @@ If you have any problems take a look at our [Troubleshooting](docs/troubleshooti
 
 To actually meaningfully do something with the certificate after update, place a daily run of `dehydrated -c` into your crontab, and set `HOOK` in the configuration to an executable file that takes the following arguments:
 
-    $HOOK `deploy_cert` _path-to_/`privkey.pem` _path-to_/`cert.pem` _path-to_/`fullchain.pem` _path-to_/`chain.pem` _timestamp_
+    $HOOK `deploy_cert` _domain_ _path-to_/`privkey.pem` _path-to_/`cert.pem` _path-to_/`fullchain.pem` _path-to_/`chain.pem` _timestamp_
 
 The hook script **must** be written in a way to silently ignore (print nothing, exit 0) any other `$1` value.
 
