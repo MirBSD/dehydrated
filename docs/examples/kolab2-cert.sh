@@ -124,15 +124,15 @@ function dofile {
 	print -nr -- "$content" >"$fn"
 }
 
-if [[ -s /etc/ssl/dhparams.pem ]]; then
-	dhp=$(</etc/ssl/dhparams.pem)$nl
+if [[ -s /kolab/etc/kolab/dhparams.pem ]]; then
+	dhp=$(</kolab/etc/kolab/dhparams.pem)$nl
 else
 	dhp=
 fi
 
-dofile 0644 0:0 /etc/ssl/default.cer "$cer$dhp"
+dofile 0644 0:0 /kolab/etc/kolab/default.cer "$cer$dhp"
 dofile 0644 0:0 /etc/ssl/deflt-ca.cer "$chn"
-[[ -n $dhp ]] && dofile 0644 0:0 /etc/ssl/dhparams.pem "$dhp"
+[[ -n $dhp ]] && dofile 0644 0:0 /kolab/etc/kolab/dhparams.pem "$dhp"
 dofile 0644 0:0 /etc/ssl/imapd.pem "$cer$chn"
 dofile 0640 0:ssl-cert /etc/ssl/private/default.key "$key"
 dofile 0640 0:ssl-cert /etc/ssl/private/stunnel.pem "$key$cer$chn"
