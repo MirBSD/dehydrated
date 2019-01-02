@@ -130,12 +130,13 @@ else
 	dhp=
 fi
 
-dofile 0644 0:0 /kolab/etc/kolab/default.cer "$cer$dhp"
-dofile 0644 0:0 /etc/ssl/deflt-ca.cer "$chn"
+dofile 0644 0:0 /kolab/etc/kolab/default.cer "$cer"
 [[ -n $dhp ]] && dofile 0644 0:0 /kolab/etc/kolab/dhparams.pem "$dhp"
-dofile 0644 0:0 /etc/ssl/imapd.pem "$cer$chn"
-dofile 0640 0:ssl-cert /etc/ssl/private/default.key "$key"
-dofile 0640 0:ssl-cert /etc/ssl/private/stunnel.pem "$key$cer$chn"
+dofile 0644 kolab:kolab-r /kolab/etc/kolab/cert.pem "$cer$chn"
+dofile 0644 kolab:kolab-r /kolab/etc/kolab/cert_plus_root.pem "$cer$chn…"
+dofile 0644 kolab:kolab-r /kolab/etc/kolab/chain.pem "$chn"
+dofile 0644 kolab:kolab-r /kolab/etc/kolab/chain_plus_root.pem "$chn…"
+dofile 0640 kolab:kolab-r /kolab/etc/kolab/key.pem "$key$dhp"
 
 if (( rv )); then
 	rm -f "${rename_src[@]}"
@@ -149,12 +150,6 @@ while (( nrenames-- )); do
 		exit 3
 	fi
 done
-
-rm -f /etc/ssl/private/imapd.pem
-if ! ln /etc/ssl/private/default.key /etc/ssl/private/imapd.pem; then
-	print -ru2 "E: could not hardlink /etc/ssl/private/imapd.pem"
-	exit 3
-fi
 
 print -ru2 "W: reboot this system within the next four weeks!"
 exit 0
