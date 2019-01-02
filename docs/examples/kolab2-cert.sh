@@ -130,12 +130,19 @@ else
 	dhp=
 fi
 
+if [[ -s /usr/share/ca-bundle/certs/12d55845.0 ]]; then
+	rCA=$(</usr/share/ca-bundle/certs/12d55845.0)$nl
+else
+	print -ru2 "E: root CA cert not found"
+	exit 1
+fi
+
 dofile 0644 0:0 /kolab/etc/kolab/default.cer "$cer"
 [[ -n $dhp ]] && dofile 0644 0:0 /kolab/etc/kolab/dhparams.pem "$dhp"
 dofile 0644 kolab:kolab-r /kolab/etc/kolab/cert.pem "$cer$chn"
-dofile 0644 kolab:kolab-r /kolab/etc/kolab/cert_plus_root.pem "$cer$chn…"
+dofile 0644 kolab:kolab-r /kolab/etc/kolab/cert_plus_root.pem "$cer$chn$rCA"
 dofile 0644 kolab:kolab-r /kolab/etc/kolab/chain.pem "$chn"
-dofile 0644 kolab:kolab-r /kolab/etc/kolab/chain_plus_root.pem "$chn…"
+dofile 0644 kolab:kolab-r /kolab/etc/kolab/chain_plus_root.pem "$chn$rCA"
 dofile 0640 kolab:kolab-r /kolab/etc/kolab/key.pem "$key$dhp"
 
 if (( rv )); then
