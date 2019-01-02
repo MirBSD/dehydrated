@@ -23,9 +23,9 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #-
-# install -c -o 0 -g bin -m 555 docs/examples/kolab2-cert.sh /usr/local/libexec/
+# install -c -o 0 -g bin -m 555 docs/examples/kolab2-cert.sh /kolab/local/libexec/
 # - and add to sudoers:
-#  _acme	ALL = NOPASSWD: /usr/local/libexec/kolab2-cert.sh
+#  _acme	ALL = NOPASSWD: /kolab/local/libexec/kolab2-cert.sh
 
 set -e
 set -o pipefail

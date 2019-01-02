@@ -52,5 +52,5 @@ case $1 {
 # 1=deploy_cert 2=domain 3=privkey 4=cert 5=cert+chain 6=chain 7=timestamp
 print '# from kolab2-hook.sh' | \
     cat - "$3" "$4" "$6" | \
-    sudo /usr/local/libexec/kolab2-cert.sh
+    sudo /kolab/local/libexec/kolab2-cert.sh
 # see there for the rest
