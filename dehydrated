@@ -1104,6 +1104,7 @@ command_version() {
   [[ -n "${ZSH_VERSION:-}" ]] && echo " zsh: ${ZSH_VERSION}"
   echo " curl: $(curl --version 2>&1 | head -n1 | cut -d" " -f1-2)"
   if [[ "${OSTYPE}" = *BSD* ]]; then
+    # XXX this may trigger on GNU/kFreeBSD
     echo " awk, sed, mktemp, grep, diff: BSD base system versions"
   else
     echo " awk: $(awk -W version 2>&1 | head -n1)"
