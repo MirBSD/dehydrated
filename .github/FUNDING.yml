@@ -1,2 +1,8 @@
-github: lukas2511
-custom: ["https://www.paypal.me/mirabilos","https://paypal.me/lukas2511", "http://www.amazon.de/registry/wishlist/1TUCFJK35IO4Q"]
+{
+  "custom": [
+    "https://www.paypal.me/mirabilos",
+    "https://paypal.me/lukas2511",
+    "http://www.amazon.de/registry/wishlist/1TUCFJK35IO4Q"
+  ],
+  "github": "lukas2511"
+}
