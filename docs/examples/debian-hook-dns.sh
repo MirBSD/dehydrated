@@ -29,8 +29,8 @@
 #  15 8 * * 0 /bin/mksh /home/acme/repo/dehydrated/dehydrated -c | /usr/bin/logger -t dehydrated
 # - config (/home/acme/config@ -> /home/acme/certbot/config)
 #  BASEDIR=/home/acme/certbot
-#  WELLKNOWN=/var/www/html/.well-known/acme-challenge
-#  HOOK=/home/acme/repo/dehydrated/docs/examples/debian-hook.sh
+#  CHALLENGETYPE=dns-01
+#  HOOK=/home/acme/repo/dehydrated/docs/examples/debian-hook-dns.sh
 # and set CONTACT_EMAIL and create /home/acme/certbot/domains.txt
 #
 # Needs bind9-dnsutils installed and $BASEDIR/dns.key populated.
@@ -39,6 +39,7 @@
 #	_acme-challenge.HOST.U.dom.tld (where HOST may have
 #	subdomain parts); the primary NS for U.dom.tld will
 #	be sent nsupdate requests.
+# bind9-dnsutils is called just dnsutils before bullseye.
 
 print -nr -- "D: debian-hook-dns.sh invoked with: "
 for i in "$@"; do
