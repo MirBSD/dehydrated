@@ -75,7 +75,7 @@ function do_dns {
 	IFS=$' \t\n'
 	# retrieve CNAME for update zone
 	cn=${|nslook CNAME _acme-challenge."$hn";}
-	[[ $cn = [A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])+(.[A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])). ]] || \
+	[[ $cn = [_A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])+(.[_A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])). ]] || \
 	    die "cannot get CNAME: ${cn@Q}"
 	# determine split
 	zone=
