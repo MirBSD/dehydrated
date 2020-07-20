@@ -33,7 +33,7 @@
 #  HOOK=/home/acme/repo/dehydrated/docs/examples/debian-hook-dns.sh
 # and set CONTACT_EMAIL and create /home/acme/certbot/domains.txt
 #
-# Needs bind9-dnsutils installed and $BASEDIR/dns.key populated.
+# Needs bind9-dnsutils installed and $BASEDIR/dns.private populated.
 # Setup: split zones for LAN vs challenge domains:
 #	_acme-challenge.HOST.dom.tld is a CNAME pointing to
 #	_acme-challenge.HOST.U.dom.tld (where HOST may have
@@ -104,7 +104,7 @@ function do_dns {
 	[[ $svr = [A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])+(.[A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])) ]] || \
 	    die "cannot get update server: ${svr@Q} $*"
 	# run the update
-	if ! nsupdate -k "$BASEDIR/dns.key"; then
+	if ! nsupdate -k "$BASEDIR/dns.private"; then
 		die "cannot update DNS"
 	fi <<-EOF
 		server $svr
