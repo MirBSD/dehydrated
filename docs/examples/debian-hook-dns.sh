@@ -104,6 +104,14 @@ function do_dns {
 	[[ $svr = [A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])+(.[A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])) ]] || \
 	    die "cannot get update server: ${svr@Q} $*"
 	# run the update
+print -ru2 -- "I: updating: nsupdate -k ${BASEDIR@Q}/dns.private <<\\EOF"
+sed >&2 's/^/N: /' <<-EOF
+	server $svr
+	zone $zone
+	$pre $cn $suf
+	send
+EOF
+print -ru2 N: EOF
 	if ! nsupdate -k "$BASEDIR/dns.private"; then
 		die "cannot update DNS"
 	fi <<-EOF
