@@ -44,8 +44,8 @@ case $1 {
 	# handled below
 	;;
 (startup_hook)
-	if (( (${EPOCHREALTIME%.*} - $(stat -c %Y /etc/ssl/default.cer)) > \
-	    (66 * 86400) )); then
+	mtime=$(stat -c %Y /etc/ssl/default.cer)
+	if (( (${EPOCHREALTIME%.*} - mtime) > (66 * 86400) )); then
 		print -ru2 'E: /etc/ssl/default.cer is older than 66 days, smells fishy'
 	fi
 	exit 0

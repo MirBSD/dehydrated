@@ -44,8 +44,8 @@ case $1 {
 	# handled below
 	;;
 (startup_hook)
-	if (( (${EPOCHREALTIME%.*} - $(stat -c %Y /kolab/etc/kolab/default.cer)) > \
-	    (66 * 86400) )); then
+	mtime=$(stat -c %Y /kolab/etc/kolab/default.cer)
+	if (( (${EPOCHREALTIME%.*} - mtime) > (66 * 86400) )); then
 		print -ru2 'E: /kolab/etc/kolab/default.cer is older than 66 days, smells fishy'
 	fi
 	exit 0
