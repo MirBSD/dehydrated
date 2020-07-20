@@ -32,12 +32,87 @@
 #  WELLKNOWN=/var/www/html/.well-known/acme-challenge
 #  HOOK=/home/acme/repo/dehydrated/docs/examples/debian-hook.sh
 # and set CONTACT_EMAIL and create /home/acme/certbot/domains.txt
+#
+# Needs bind9-dnsutils installed and $BASEDIR/dns.key populated.
+# Setup: split zones for LAN vs challenge domains:
+#	_acme-challenge.HOST.dom.tld is a CNAME pointing to
+#	_acme-challenge.HOST.U.dom.tld (where HOST may have
+#	subdomain parts); the primary NS for U.dom.tld will
+#	be sent nsupdate requests.
 
-print -nr -- "D: debian-hook.sh invoked with: "
+print -nr -- "D: debian-hook-dns.sh invoked with: "
 for i in "$@"; do
 	print -nr -- "${i@Q} "
 done
 print -r -- "#"
+
+function die {
+	print -r -- "E: $*"
+	exit 1
+}
+
+extdns=8.8.8.8
+function nslook {
+	REPLY=$(dig @"$extdns" -q "$2" -r -t "$1" +short) || \
+	    die "couldn’t nslookup $*"
+}
+function do_dns {
+	set -o noglob
+	local hn=$1 pre=$2 suf=$3
+	local cn zone svr i j x y
+
+	# determine FQDN of localhost
+	if [[ -z $hn ]]; then
+		hn=$(hostname)
+		[[ $hn = *.* ]] || hn=$(hostname -f)
+	fi
+	hn=${hn%%+(.)}
+	[[ $hn = [A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])+(.[A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])) ]] || \
+	    die "cannot get FQDN: ${hn@Q}"
+	IFS=.
+	set -- $hn
+	IFS=$' \t\n'
+	# retrieve CNAME for update zone
+	cn=${|nslook CNAME _acme-challenge."$hn";}
+	[[ $cn = [A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])+(.[A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])). ]] || \
+	    die "cannot get CNAME: ${cn@Q}"
+	# determine split
+	zone=
+	i=0
+	while (( ++i < $# )); do
+		x=
+		y=
+		j=0
+		while (( ++j <= $# )); do
+			if (( j <= i )); then
+				eval "x+=\$$j."
+			else
+				eval "y+=\$$j."
+			fi
+		done
+		[[ $cn = ?(*.)"$x"*."$y" ]] || continue
+		zone=${cn#?(*.)"$x"}
+		zone=${zone%.}
+		break
+	done
+	[[ -n $zone ]] || die "cannot determine split for $cn"
+	# find update server
+	set -- ${|nslook SOA "$zone";}
+	svr=${1%%+(.)}
+	shift
+	[[ $svr = [A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])+(.[A-Za-z0-9]?(*([A-Za-z0-9-])[A-Za-z0-9])) ]] || \
+	    die "cannot get update server: ${svr@Q} $*"
+	# run the update
+	if ! nsupdate -k "$BASEDIR/dns.key"; then
+		die "cannot update DNS"
+	fi <<-EOF
+		server $svr
+		zone $zone
+		$pre $cn $suf
+		send
+	EOF
+	print -ru2 -- "I: DNS01 update done"
+}
 
 case $1 {
 (deploy_cert)
@@ -48,6 +123,16 @@ case $1 {
 	    (66 * 86400) )); then
 		print -ru2 'E: /etc/ssl/default.cer is older than 66 days, smells fishy'
 	fi
+	exit 0
+	;;
+(deploy_challenge)
+	[[ $4 = *\"* ]] && die "challenge contains double quotes! ${4@Q}"
+	do_dns "$2" "update add" "300 IN TXT \"$4\""
+	exit 0
+	;;
+(clean_challenge)
+	[[ $4 = *\"* ]] && die "challenge contains double quotes! ${4@Q}"
+	do_dns "$2" "update delete" "300 IN TXT \"$4\""
 	exit 0
 	;;
 (*)
