@@ -55,7 +55,7 @@ function die {
 
 extdns=8.8.8.8
 function nslook {
-	REPLY=$(dig @"$extdns" -q "$2" -r -t "$1" +short) || \
+	REPLY=$(HOME=/non/existant dig @"$extdns" -q "$2" -t "$1" +short) || \
 	    die "couldn’t nslookup $*"
 }
 function do_dns {
