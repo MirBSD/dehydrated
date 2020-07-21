@@ -33,7 +33,8 @@
 #  HOOK=/home/acme/repo/dehydrated/docs/examples/debian-hook-dns.sh
 # and set CONTACT_EMAIL and create /home/acme/certbot/domains.txt
 #
-# Needs bind9-dnsutils installed and $BASEDIR/dns.private populated.
+# Needs bind9-dnsutils installed and $BASEDIR/dns.private
+# as well as $BASEDIR/dns.key populated.
 # Setup: split zones for LAN vs challenge domains:
 #	_acme-challenge.HOST.dom.tld is a CNAME pointing to
 #	_acme-challenge.HOST.U.dom.tld (where HOST may have
