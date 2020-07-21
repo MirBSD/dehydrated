@@ -40,7 +40,7 @@ if (( USER_ID )); then
 fi
 
 IFS= read -r line
-if [[ $line != '# from debian-hook.sh' ]]; then
+if [[ $line != '# from debian-hook'?(-dns)'.sh' ]]; then
 	print -ru2 E: not called from dehydrated hook script
 	exit 1
 fi
