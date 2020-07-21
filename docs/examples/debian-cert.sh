@@ -178,3 +178,7 @@ svr 0 /etc/init.d/apache2 stop
 svr 1 /etc/init.d/postfix restart
 svr 1 /etc/init.d/apache2 start
 exit $rc
+
+# alternatively, do it manually…
+print -ru2 "W: reboot this system within the next four weeks!"
+exit 0
