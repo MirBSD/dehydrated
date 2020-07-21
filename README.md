@@ -116,6 +116,10 @@ If you want your name to be added to the [donations list](https://dehydrated.io/
 email `donations@dehydrated.io`. I respect your privacy and won't publish your name without permission.
 
 Other ways of donating:
+ - https://paypal.me/lukas2511
  - [My Amazon Wishlist](http://www.amazon.de/registry/wishlist/1TUCFJK35IO4Q)
  - Monero: 4Kkf4tF4r9DakxLj37HDXLJgmpVfQoFhT7JLDvXwtUZZMTbsK9spsAPXivWPAFcDUj6jHhY8hJSHX8Cb8ndMhKeQHPSkBZZiK89Fx8NTHk
  - Bitcoin: 12487bHxcrREffTGwUDnoxF1uYxCA7ztKK
+
+Fork note: this fork is bugfixed and improved by mirabilos, for MirBSD support, mksh support, more examples, etc.
+ - https://www.paypal.me/mirabilos
