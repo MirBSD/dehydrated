@@ -49,7 +49,7 @@ done
 print -r -- "#"
 
 function die {
-	print -r -- "E: $*"
+	print -ru2 -- "E: $*"
 	exit 1
 }
 
