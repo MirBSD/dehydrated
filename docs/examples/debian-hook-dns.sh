@@ -113,7 +113,7 @@ function do_dns {
 		$pre $cn $suf
 		send
 	EOF
-	print -ru2 -- "I: DNS01 update done"
+	print -r -- "I: DNS01 update done"
 }
 
 case $1 {
